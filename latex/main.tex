@@ -1,0 +1,50 @@
+% ============================================================
+% MAIN.TEX — CDSS Criminal Record Exemption Application
+% ============================================================
+% Compiles all documents into a single PDF.
+% Upload this entire folder to Overleaf and compile with pdfLaTeX.
+%
+% To compile a single document, comment out the others below.
+% ============================================================
+
+\documentclass[12pt, letterpaper]{article}
+
+% --- Load custom style package ---
+\usepackage{styles/cdss-exemption}
+
+% --- Load all variables ---
+\input{config/variables}
+
+% ============================================================
+\begin{document}
+
+% ============================================================
+% DOCUMENT 1: COVER LETTER
+% ============================================================
+\input{content/cover-letter}
+
+% ============================================================
+% DOCUMENT 2: WRITTEN STATEMENT OF REHABILITATION
+% ============================================================
+\input{content/statement-part1}  % Sections I--II
+\input{content/statement-part2}  % Sections III--IV
+\input{content/statement-part3}  % Sections V--VI
+\input{content/statement-part4}  % Sections VII--IX
+
+% ============================================================
+% DOCUMENT 3: CHARACTER REFERENCE A — Supervisor / Owner
+% ============================================================
+\input{content/reference-a}
+
+% ============================================================
+% DOCUMENT 4: CHARACTER REFERENCE B — Professional Colleague
+% ============================================================
+\input{content/reference-b}
+
+% ============================================================
+% DOCUMENT 5: CHARACTER REFERENCE C — Community Contact
+% ============================================================
+\input{content/reference-c}
+
+% ============================================================
+\end{document}

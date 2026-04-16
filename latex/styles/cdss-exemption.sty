@@ -1,0 +1,366 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{styles/cdss-exemption}[2026/04/15 CDSS Criminal Record Exemption Document Package]
+
+% ============================================================
+% REQUIRED PACKAGES
+% ============================================================
+\RequirePackage[letterpaper, top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\RequirePackage{newtxtext}
+\RequirePackage{newtxmath}
+\RequirePackage{setspace}
+\RequirePackage{parskip}
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{enumitem}
+\RequirePackage{tabularx}
+\RequirePackage{booktabs}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{lastpage}
+\RequirePackage{microtype}
+\RequirePackage{etoolbox}
+\RequirePackage{ragged2e}
+\RequirePackage{calc}
+\RequirePackage{tikz}
+\RequirePackage{changepage}
+
+% hyperref must be loaded last among these
+\RequirePackage[
+  colorlinks=true,
+  linkcolor=linkblue,
+  urlcolor=linkblue,
+  citecolor=linkblue,
+  pdfauthor={},
+  pdftitle={CDSS Criminal Record Exemption Application},
+  pdfsubject={RCFE Certification},
+  bookmarks=true
+]{hyperref}
+
+% ============================================================
+% COLOR PALETTE
+% ============================================================
+\definecolor{primaryblue}{RGB}{0, 51, 102}
+\definecolor{darktext}{RGB}{33, 33, 33}
+\definecolor{mediumgray}{RGB}{128, 128, 128}
+\definecolor{lightgray}{RGB}{230, 230, 230}
+\definecolor{linkblue}{RGB}{0, 82, 155}
+\definecolor{placeholderred}{RGB}{204, 0, 0}
+\definecolor{rulegray}{RGB}{180, 180, 180}
+\definecolor{sectionblue}{RGB}{0, 51, 102}
+\definecolor{formbg}{RGB}{245, 245, 245}
+\definecolor{formrule}{RGB}{100, 100, 100}
+
+% ============================================================
+% BASE TYPOGRAPHY
+% ============================================================
+\color{darktext}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+% ============================================================
+% PAGE STYLES (HEADERS & FOOTERS)
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyfoot[C]{\footnotesize\textcolor{mediumgray}{Page~\thepage~of~\pageref{LastPage}}}
+
+% First page of each document — no header, just footer
+\fancypagestyle{docfirstpage}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \fancyfoot[C]{\footnotesize\textcolor{mediumgray}{Page~\thepage~of~\pageref{LastPage}}}%
+}
+
+% Continuation pages — header with doc title + applicant name
+\fancypagestyle{doccontinuation}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0.4pt}%
+  \fancyhead[L]{\footnotesize\textcolor{mediumgray}{\@currentdoctitle}}%
+  \fancyhead[R]{\footnotesize\textcolor{mediumgray}{\@currentapplicant}}%
+  \fancyfoot[C]{\footnotesize\textcolor{mediumgray}{Page~\thepage~of~\pageref{LastPage}}}%
+}
+
+% Plain style for LIC 301E forms
+\fancypagestyle{licform}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \fancyfoot[L]{\footnotesize\textit{LIC 301E (7/03)}}%
+  \fancyfoot[R]{\footnotesize\textcolor{mediumgray}{Page~\thepage~of~\pageref{LastPage}}}%
+}
+
+% ============================================================
+% SECTION FORMATTING
+% ============================================================
+\titleformat{\section}
+  {\Large\bfseries\color{sectionblue}}
+  {\Roman{section}.}{0.6em}{}
+  [\vspace{-0.5em}{\color{rulegray}\rule{\textwidth}{0.5pt}}]
+
+\titleformat{\subsection}
+  {\large\bfseries\color{primaryblue}}
+  {\Alph{subsection}.}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{darktext}}
+  {}{0em}{}
+
+\titlespacing*{\section}{0pt}{1.5em}{0.75em}
+\titlespacing*{\subsection}{0pt}{1.2em}{0.5em}
+\titlespacing*{\subsubsection}{0pt}{0.8em}{0.3em}
+
+% ============================================================
+% INTERNAL STATE COMMANDS
+% ============================================================
+\newcommand{\@currentdoctitle}{}
+\newcommand{\@currentapplicant}{}
+
+% Store applicant name for headers (called in variables.tex)
+\newcommand{\setapplicant}[1]{\renewcommand{\@currentapplicant}{#1}}
+
+% ============================================================
+% DOCUMENT SEPARATION COMMAND
+% ============================================================
+% Starts a new document within the compiled PDF
+% Usage: \newdocument{Document Title}
+\newcommand{\newdocument}[1]{%
+  \clearpage%
+  \renewcommand{\@currentdoctitle}{#1}%
+  \thispagestyle{docfirstpage}%
+  \pagestyle{doccontinuation}%
+  \setcounter{section}{0}%
+}
+
+% ============================================================
+% DOCUMENT TITLE BLOCK
+% ============================================================
+\newcommand{\documenttitle}[1]{%
+  \begin{center}
+    {\LARGE\bfseries\color{primaryblue}#1}
+  \end{center}
+  \vspace{-0.3em}
+  {\color{rulegray}\hrule height 0.5pt}
+  \vspace{0.8em}
+}
+
+% ============================================================
+% PLACEHOLDER COMMAND
+% ============================================================
+% Renders in bold red so unfilled fields are obvious before submission
+\newcommand{\placeholder}[1]{\textcolor{placeholderred}{\textbf{[#1]}}}
+
+% ============================================================
+% LINE & RULE COMMANDS
+% ============================================================
+\newcommand{\sectionrule}{%
+  \vspace{0.3em}{\color{rulegray}\hrule height 0.5pt}\vspace{0.5em}%
+}
+
+\newcommand{\formline}[1][3in]{\rule{#1}{0.4pt}}
+
+\newcommand{\signatureline}[1]{%
+  \vspace{2em}%
+  \noindent\rule{3.5in}{0.4pt}\\[0.2em]%
+  \noindent\textbf{#1}%
+  \vspace{0.5em}%
+}
+
+\newcommand{\datefield}{%
+  \vspace{0.5em}%
+  \noindent Date:~\rule{2.5in}{0.4pt}%
+  \vspace{0.5em}%
+}
+
+% ============================================================
+% COVER LETTER COMPONENTS
+% ============================================================
+
+% Applicant info block (sender)
+\newcommand{\applicantblock}{%
+  \begin{flushleft}
+    \textbf{\ApplicantName}\\
+    \ApplicantAddress\\
+    \ApplicantCity,~\ApplicantState~\ApplicantZip\\
+    \ApplicantPhone\\
+    \ApplicantEmail
+  \end{flushleft}
+}
+
+% Agency address block (recipient)
+\newcommand{\agencyblock}{%
+  \begin{flushleft}
+    \textbf{\AgencyFull}\\
+    \BranchFull~(\BranchAbbrev)\\
+    ATTN:~\CPUUnit\\
+    \AgencyAddress\\
+    \AgencyCity,~\AgencyState~\AgencyZip
+  \end{flushleft}
+}
+
+% RE: subject line
+\newcommand{\reline}[1]{%
+  \vspace{0.5em}%
+  \noindent\textbf{RE:}~#1%
+  \vspace{0.5em}%
+}
+
+% Enclosure list
+\newenvironment{enclosurelist}{%
+  \vspace{0.75em}%
+  \noindent\textbf{Enclosed Documents:}%
+  \begin{enumerate}[leftmargin=2em, itemsep=0.3em, topsep=0.3em]
+}{%
+  \end{enumerate}
+}
+
+% ============================================================
+% STATEMENT META BLOCK
+% ============================================================
+\newcommand{\statementmeta}{%
+  \begin{center}
+    \begin{tabular}{@{}r@{\quad}l@{}}
+      \textbf{Applicant:} & \ApplicantName \\
+      \textbf{Facility Type:} & \FacilityType \\
+      \textbf{Submitted to:} & \AgencyFull, \BranchFull\ (\BranchAbbrev), \CPUUnit \\
+      \textbf{Date:} & \SubmissionDate \\
+    \end{tabular}
+  \end{center}
+  \vspace{0.5em}
+}
+
+% ============================================================
+% INCIDENT TABLE
+% ============================================================
+\newcommand{\incidenttable}{%
+  \vspace{0.5em}
+  \begin{center}
+  \small
+  \begin{tabularx}{\textwidth}{c c c c c c c c}
+    \toprule
+    \textbf{\#} & \textbf{Date} & \textbf{Offense} & \textbf{Class} & \textbf{Injuries} & \textbf{Prop.\ Dmg.} & \textbf{Accidents} & \textbf{Jail} \\
+    \midrule
+    1 & \IncidentOneDate & \IncidentOneType & \IncidentClass & None & None & None & None \\
+    2 & \IncidentTwoDate & \IncidentTwoType & \IncidentClass & None & None & None & None \\
+    \bottomrule
+  \end{tabularx}
+  \end{center}
+  \vspace{0.5em}
+}
+
+% ============================================================
+% REHABILITATION TABLE
+% ============================================================
+\newcommand{\rehabtable}{%
+  \vspace{0.5em}
+  \begin{center}
+  \small
+  \begin{tabularx}{\textwidth}{X l l l}
+    \toprule
+    \textbf{Program / Requirement} & \textbf{Provider} & \textbf{Duration} & \textbf{Status} \\
+    \midrule
+    Court-ordered DUI Program (Incident~1) & \DUIProgramOne & \DUIProgramOneDuration & \textbf{Completed} \\
+    Court-ordered DUI Program (Incident~2) & \DUIProgramTwo & \DUIProgramTwoDuration & \textbf{Completed} \\
+    Voluntary Rehabilitation (Incident~2) & \RehabProgram & \RehabDuration & \textbf{Completed} \\
+    Alcoholics Anonymous (AA) Meetings & Various & Ongoing & \textbf{Attended} \\
+    All Fines, Fees, and Charges & Court & --- & \textbf{Paid in Full} \\
+    DMV and Legal Compliance & State of CA & --- & \textbf{Compliant} \\
+    \bottomrule
+  \end{tabularx}
+  \end{center}
+  \vspace{0.5em}
+}
+
+% ============================================================
+% SWORN STATEMENT / PERJURY DECLARATION
+% ============================================================
+\newenvironment{swornstatement}{%
+  \vspace{1.5em}%
+  \sectionrule
+  \begin{itshape}%
+}{%
+  \end{itshape}%
+  \vspace{2em}%
+  \signatureline{Signature}%
+  \datefield
+}
+
+% ============================================================
+% LIC 301E FORM COMPONENTS
+% ============================================================
+
+% Form header mimicking the official LIC 301E
+\newcommand{\licformheader}{%
+  \thispagestyle{licform}%
+  \pagestyle{licform}%
+  \begin{center}
+    {\scriptsize\textsc{State of California~---~Health and Human Services Agency}%
+    \hfill%
+    \textsc{California Department of Social Services}\\%
+    \hfill\textsc{Community Care Licensing}}
+  \end{center}
+  \vspace{0.5em}
+  {\large\bfseries REFERENCE REQUEST FOR:}\quad{\large\ApplicantName}\\[0.3em]
+  To operate or work in facility type:\quad\textbf{\CertificationType}
+  \sectionrule
+  \vspace{0.3em}
+  {\small\textit{The above named person has applied to operate, work or reside in a community
+  care facility serving the client group indicated above. This person has selected you to
+  write a reference statement on his/her behalf.} \textbf{\textit{If you work at the facility, are a
+  client of the facility, or are related to this person in any way, you may not complete
+  this reference statement.}}}
+  \vspace{0.3em}
+
+  {\small\textit{Please complete the entire form. Your honest reply will help us ensure high
+  quality care in our licensed facilities.}}
+  \sectionrule
+}
+
+% Reference writer info block
+\newcommand{\licwriterinfo}[4]{%
+  % #1 = Name, #2 = Address, #3 = City/State/Zip, #4 = Phone
+  \vspace{0.5em}
+  \noindent\textbf{Your Name:}\quad #1\\[0.4em]
+  \noindent\textbf{Street Address:}\quad #2\\[0.4em]
+  \noindent\textbf{City/State/Zip:}\quad #3\\[0.4em]
+  \noindent\textbf{Day Time Telephone Number:}\quad #4
+  \vspace{0.5em}
+  \sectionrule
+}
+
+% LIC 301E question
+\newcounter{licquestion}
+\newcommand{\licquestion}[1]{%
+  \stepcounter{licquestion}%
+  \vspace{1em}%
+  \noindent{\bfseries\color{primaryblue}\arabic{licquestion}.\quad#1}%
+  \vspace{0.5em}%
+}
+
+% Reset question counter
+\newcommand{\resetlicquestions}{\setcounter{licquestion}{0}}
+
+% LIC signature block
+\newcommand{\licsignatureblock}{%
+  \vspace{2.5em}
+  \sectionrule
+  \noindent
+  \begin{tabularx}{\textwidth}{@{}X@{\hspace{1em}}X@{\hspace{1em}}l@{}}
+    \textbf{PRINT YOUR NAME} & \textbf{YOUR SIGNATURE} & \textbf{DATE} \\[2.5em]
+    \rule{2.5in}{0.4pt} & \rule{2.5in}{0.4pt} & \rule{1.5in}{0.4pt}
+  \end{tabularx}
+  \vspace{1em}
+
+  \noindent{\footnotesize\textit{LIC 301E (7/03)}}
+}
+
+% ============================================================
+% UTILITY: BOLD KEYWORD INLINE
+% ============================================================
+\newcommand{\keyword}[1]{\textbf{\textcolor{primaryblue}{#1}}}
+
+% ============================================================
+% END OF PACKAGE
+% ============================================================
+\endinput
